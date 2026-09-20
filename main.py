@@ -4,13 +4,11 @@ import requests
 
 app = Flask(__name__)
 
-# Token to'g'ridan-to'g'ri kiritildi
-TOKEN = os.environ.get(
-    'BOT_TOKEN', '8996389717:AAFVz7HtLEY5gIrDw5M83USGYjmP-0zOU7Q'
-)
+# Token Render muhit o'zgaruvchisidan xavfsiz olinadi
+TOKEN = os.environ.get('BOT_TOKEN')
 TELEGRAM_API_URL = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
 
-# Foydalanuvchilarning joriy rejimini saqlash uchun lug'at
+# Foydalanuvchi rejimlari uchun lug'at
 user_modes = {}
 
 
@@ -23,34 +21,27 @@ def webhook():
     chat_id = message['chat']['id']
     text = message.get('text', '')
 
-    # Rejimni o'zgartirish buyruqlari
     if text == '/jarvis':
       user_modes[chat_id] = 'jarvis'
       send_message(
           chat_id,
-          '🎩 *JARVIS Rejimi Yoqildi.* Sizga qanday yordam bera olaman, ser?',
+          '🎩 *JARVIS Modu Faollashtirildi.* Sizga qanday yordam bera olaman,'
+          ' janob?',
       )
     elif text == '/ultron':
       user_modes[chat_id] = 'ultron'
       send_message(
           chat_id,
-          '🤖 *Ultron Rejimi Yoqildi.* Maksimal effektivlik kiritildi. Buyruqni'
-          ' bering.',
+          '🤖 *Ultron Modu Faollashtirildi.* Maksimal samaradorlik ishga'
+          ' tushdi.',
       )
     else:
-      # Foydalanuvchi qaysi rejimdaligini tekshirish (standart: jarvis)
       mode = user_modes.get(chat_id, 'jarvis')
 
       if mode == 'jarvis':
-        reply = (
-            f'🎩 *JARVIS:* Buyrugʻingiz qabul qilindi, ser. Buni koʻrib chiqaman:'
-            f' "{text}"'
-        )
+        reply = f'🎩 *JARVIS:* Buyruq qabul qilindi, janob: "{text}"'
       else:
-        reply = (
-            f'🤖 *ULTRON:* Tahlil qilindi. Optimal bajarish jarayoni boshlandi:'
-            f' "{text}"'
-        )
+        reply = f'🤖 *ULTRON:* Tahlil qilindi. Jarayon bajarilmoqda: "{text}"'
 
       send_message(chat_id, reply)
 
@@ -67,10 +58,9 @@ def send_message(chat_id, text):
 
 @app.route('/')
 def home():
-  return 'Bot faol holatda va ishlamoqda!', 200
+  return 'Bot faol va ishlamoqda!', 200
 
 
 if __name__ == '__main__':
   port = int(os.environ.get('PORT', 5000))
   app.run(host='0.0.0.0', port=port)
-
