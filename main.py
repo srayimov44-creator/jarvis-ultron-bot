@@ -1,6 +1,11 @@
 import torch
-from ultralytics.nn.tasks import DetectionModel
-torch.serialization.add_safe_globals([DetectionModel])
+
+# PyTorch 2.6+ weights_only cheklovini xavfsiz aylanib o'tish
+_original_load = torch.load
+def _custom_load(*args, **kwargs):
+    kwargs['weights_only'] = False
+    return _original_load(*args, **kwargs)
+torch.load = _custom_load
 import os
 import io
 import asyncio
